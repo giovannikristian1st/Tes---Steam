@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Ujian Berdiferensiasi</title>
+    <style>
+        /* Desain & Palet Warna Cerah Modern */
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #06b6d4;
+            --background-color: #f0fdfa;
+            --card-background: #ffffff;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --success-color: #10b981;
+            --border-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e2e8f0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Form & Input */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Tombol */
+        button {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2);
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-success:hover {
+            background-color: #059669;
+        }
+
+        /* Bagian Konten & Hasil */
+        .box-tampil {
+            background-color: #f8fafc;
+            border-left: 5px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .box-evaluasi {
+            border-left-color: var(--success-color);
+            background-color: #f0fdf4;
+        }
+
+        /* Penanda Loading */
+        #loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: var(--secondary-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        /* Class untuk sembunyikan elemen */
+        .hidden {
+            display: none;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e2e8f0;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>📝 Ujian Berdiferensiasi</h1>
+            <p>Materi khusus yang dirancang sesuai minat dan hobimu!</p>
+        </header>
+
+        <div id="loading">⏳ Sedang memproses... Mohon tunggu ya!</div>
+
+        <div id="section-profile">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" placeholder="Masukkan namamu">
+            </div>
+            <div class="form-group">
+                <label for="hobi">Hobi / Ketertarikan</label>
+                <input type="text" id="hobi" placeholder="Misal: Sepak bola, Menggambar, Musik">
+            </div>
+            <div class="form-group">
+                <label for="topik">Topik Pelajaran</label>
+                <input type="text" id="topik" placeholder="Misal: Aljabar, Fotosintesis, Puisi">
+            </div>
+            <button type="button" onclick="buatSoal()">✨ Buatkan Soal Khusus</button>
+        </div>
+
+        <div id="section-question" class="hidden">
+            <hr>
+            <div class="form-group">
+                <label>Soal Ujianmu:</label>
+                <div id="tampilan-soal" class="box-tampil"></div>
+            </div>
+            <div class="form-group">
+                <label for="jawaban">Tulis Jawabanmu di Sini:</label>
+                <textarea id="jawaban" placeholder="Ketik jawaban lengkapmu di sini..."></textarea>
+            </div>
+            <button type="button" class="btn-success" onclick="koreksiJawaban()">🚀 Kumpulkan & Nilai</button>
+        </div>
+
+        <div id="section-evaluation" class="hidden">
+            <hr>
+            <div class="form-group">
+                <label>Hasil Evaluasi & Nilai:</label>
+                <div id="tampilan-evaluasi" class="box-tampil box-evaluasi"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ISI DI SINI: Paste URL Web App Google Apps Script Anda di dalam tanda kutip
+        const URL_APPS_SCRIPT = ""; 
+
+        // Variabel global untuk menyimpan teks soal
+        let soal_tersimpan = "";
+
+        // Fungsi Helper Loading
+        function toggleLoading(show) {
+            const loadingEl = document.getElementById('loading');
+            if (show) {
+                loadingEl.style.display = 'block';
+            } else {
+                loadingEl.style.display = 'none';
+            }
+        }
+
+        // 1. FUNGSI BUAT SOAL
+        async function buatSoal() {
+            const nama = document.getElementById('nama').value.trim();
+            const hobi = document.getElementById('hobi').value.trim();
+            const topik = document.getElementById('topik').value.trim();
+
+            // Validasi Input Kosong
+            if (!nama || !hobi || !topik) {
+                alert("Harap isi semua kolom profil terlebih dahulu!");
+                return;
+            }
+
+            toggleLoading(true);
+
+            try {
+                const payload = {
+                    action: "generate_soal",
+                    nama: nama,
+                    hobi: hobi,
+                    topik: topik
+                };
+
+                const response = await fetch(URL_APPS_SCRIPT, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Respon server bermasalah.");
+                }
+
+                const data = await response.json();
+                
+                // Simpan soal ke variabel global
+                soal_tersimpan = data.teks_soal;
+
+                // Tampilkan ke UI
+                document.getElementById('tampilan-soal').innerText = data.teks_soal;
+                document.getElementById('section-question').classList.remove('hidden');
+                
+                // Scroll otomatis ke bagian soal
+                document.getElementById('section-question').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Gagal mengambil soal. Pastikan URL Apps Script sudah benar dan mendukung CORS.");
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        // 2. FUNGSI KOREKSI JAWABAN
+        async function koreksiJawaban() {
+            const nama = document.getElementById('nama').value.trim();
+            const hobi = document.getElementById('hobi').value.trim();
+            const topik = document.getElementById('topik').value.trim();
+            const jawaban_murid = document.getElementById('jawaban').value.trim();
+
+            if (!jawaban_murid) {
+                alert("Jangan lupa ketik jawabanmu dulu ya sebelum mengumpulkan!");
+                return;
+            }
+
+            toggleLoading(true);
+
+            try {
+                const payload = {
+                    action: "koreksi_jawaban",
+                    nama: nama,
+                    hobi: hobi,
+                    topik: topik,
+                    soal: soal_tersimpan,
+                    jawaban: jawaban_murid
+                };
+
+                const response = await fetch(URL_APPS_SCRIPT, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Respon server bermasalah.");
+                }
+
+                const data = await response.json();
+
+                // Tampilkan hasil evaluasi ke UI
+                document.getElementById('tampilan-evaluasi').innerText = data.teks_evaluasi;
+                document.getElementById('section-evaluation').classList.remove('hidden');
+
+                // Scroll otomatis ke bagian evaluasi
+                document.getElementById('section-evaluation').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Gagal mengirim jawaban. Silakan coba beberapa saat lagi.");
+            } finally {
+                toggleLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>
