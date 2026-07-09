@@ -192,10 +192,6 @@
                 <label for="hobi">Hobi / Ketertarikan</label>
                 <input type="text" id="hobi" placeholder="Misal: Sepak bola, Menggambar, Musik">
             </div>
-            <div class="form-group">
-                <label for="topik">Topik Pelajaran</label>
-                <input type="text" id="topik" placeholder="Misal: Aljabar, Fotosintesis, Puisi">
-            </div>
             <button type="button" onclick="buatSoal()">✨ Buatkan Soal Khusus</button>
         </div>
 
@@ -222,8 +218,23 @@
     </div>
 
     <script>
+        // =========================================================================
+        // 🛠️ PENGATURAN GURU (Ubah isian di dalam tanda kutip kapan pun Anda mau)
+        // =========================================================================
+        
+        const JUMLAH_PERTANYAAN = "1"; 
+        // Contoh: "1", "3", "5"
+        
+        const TOPIK_PELAJARAN = "perkalian matematika"; 
+        // Contoh: "fotosintesis", "pahlawan kemerdekaan", "teks prosedur"
+        
+        const JENIS_PERTANYAAN = "soal cerita studi kasus"; 
+        // Contoh: "soal cerita", "pertanyaan analisis", "pilihan ganda"
+
         // URL Web App Google Apps Script Anda
         const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbzT_s3kR4ylLil0XZZxRgiWV-aZJuW5Nxd-OTehIyzu_MUOUe6smNy9ilUIjKpBHviXyA/exec"; 
+        // =========================================================================
+
 
         // Variabel global untuk menyimpan teks soal
         let soal_tersimpan = "";
@@ -242,11 +253,10 @@
         async function buatSoal() {
             const nama = document.getElementById('nama').value.trim();
             const hobi = document.getElementById('hobi').value.trim();
-            const topik = document.getElementById('topik').value.trim();
 
             // Validasi Input Kosong
-            if (!nama || !hobi || !topik) {
-                alert("Harap isi semua kolom profil terlebih dahulu!");
+            if (!nama || !hobi) {
+                alert("Harap isi nama dan hobimu terlebih dahulu!");
                 return;
             }
 
@@ -257,7 +267,9 @@
                     action: "generate_soal",
                     nama: nama,
                     hobi: hobi,
-                    topik: topik
+                    topik: TOPIK_PELAJARAN,
+                    jumlah: JUMLAH_PERTANYAAN,
+                    jenis: JENIS_PERTANYAAN
                 };
 
                 const response = await fetch(URL_APPS_SCRIPT, {
@@ -271,20 +283,15 @@
 
                 const data = await response.json();
                 
-                // PENDETEKSI ERROR DARI APPS SCRIPT
                 if (data.error) {
                     alert("Pesan Error dari Google Apps Script:\n\n" + data.error + "\n\nPastikan API Key sudah benar dan lakukan Deploy > New Version!");
                     return;
                 }
 
-                // Simpan soal ke variabel global
                 soal_tersimpan = data.teks_soal;
 
-                // Tampilkan ke UI
                 document.getElementById('tampilan-soal').innerText = data.teks_soal;
                 document.getElementById('section-question').classList.remove('hidden');
-                
-                // Scroll otomatis ke bagian soal
                 document.getElementById('section-question').scrollIntoView({ behavior: 'smooth' });
 
             } catch (error) {
@@ -299,7 +306,6 @@
         async function koreksiJawaban() {
             const nama = document.getElementById('nama').value.trim();
             const hobi = document.getElementById('hobi').value.trim();
-            const topik = document.getElementById('topik').value.trim();
             const jawaban_murid = document.getElementById('jawaban').value.trim();
 
             if (!jawaban_murid) {
@@ -314,7 +320,7 @@
                     action: "koreksi_jawaban",
                     nama: nama,
                     hobi: hobi,
-                    topik: topik,
+                    topik: TOPIK_PELAJARAN,
                     soal: soal_tersimpan,
                     jawaban: jawaban_murid
                 };
@@ -330,17 +336,13 @@
 
                 const data = await response.json();
 
-                // PENDETEKSI ERROR DARI APPS SCRIPT
                 if (data.error) {
                     alert("Pesan Error dari Google Apps Script:\n\n" + data.error + "\n\nPastikan API Key sudah benar dan lakukan Deploy > New Version!");
                     return;
                 }
 
-                // Tampilkan hasil evaluasi ke UI
                 document.getElementById('tampilan-evaluasi').innerText = data.teks_evaluasi;
                 document.getElementById('section-evaluation').classList.remove('hidden');
-
-                // Scroll otomatis ke bagian evaluasi
                 document.getElementById('section-evaluation').scrollIntoView({ behavior: 'smooth' });
 
             } catch (error) {
