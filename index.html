@@ -222,7 +222,7 @@
     </div>
 
     <script>
-        // ISI DI SINI: Paste URL Web App Google Apps Script Anda di dalam tanda kutip
+        // URL Web App Google Apps Script Anda
         const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbw2QUwZ1yoPD2r-4ul2erBdzhBRxUeOH8HUK45BHO7aZ6_oUqz_Y5nFH7bBZDvlQA-c/exec"; 
 
         // Variabel global untuk menyimpan teks soal
@@ -271,6 +271,12 @@
 
                 const data = await response.json();
                 
+                // PENDETEKSI ERROR DARI APPS SCRIPT
+                if (data.error) {
+                    alert("Pesan Error dari Google Apps Script:\n\n" + data.error + "\n\nPastikan API Key sudah benar dan lakukan Deploy > New Version!");
+                    return;
+                }
+
                 // Simpan soal ke variabel global
                 soal_tersimpan = data.teks_soal;
 
@@ -283,7 +289,7 @@
 
             } catch (error) {
                 console.error("Error:", error);
-                alert("Gagal mengambil soal. Pastikan URL Apps Script sudah benar dan mendukung CORS.");
+                alert("Gagal menghubungi server. Pastikan URL Apps Script sudah benar.");
             } finally {
                 toggleLoading(false);
             }
@@ -323,6 +329,12 @@
                 }
 
                 const data = await response.json();
+
+                // PENDETEKSI ERROR DARI APPS SCRIPT
+                if (data.error) {
+                    alert("Pesan Error dari Google Apps Script:\n\n" + data.error + "\n\nPastikan API Key sudah benar dan lakukan Deploy > New Version!");
+                    return;
+                }
 
                 // Tampilkan hasil evaluasi ke UI
                 document.getElementById('tampilan-evaluasi').innerText = data.teks_evaluasi;
